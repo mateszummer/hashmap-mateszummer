@@ -7,6 +7,9 @@ public class Main {
         for (int i = 0; i <17; i++) {
             lul.add(i,i);
         }
+        System.out.println(lul.getValue(2));
+        lul.remove(2);
+        System.out.println(3);
 
     }
 }

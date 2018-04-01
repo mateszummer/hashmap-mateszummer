@@ -15,15 +15,23 @@ public class HashingTheMap<K, V> {
 
     public void add(K key, V value) {
         int position = getHash(key);
+        KeyValue newKeyValue = new KeyValue();
+        newKeyValue.key = key;
+        newKeyValue.value = value;
         if (elements[position] != null) {
-            throw new IllegalArgumentException();
+            for (KeyValue keyValue : elements[position]) {
+                if (keyValue.key.equals(key)) {
+                    throw new IllegalArgumentException();
+                } else {
+                    elements[position].add(newKeyValue);
+                    return;
+                }
+            }
+        } else {
+            LinkedList<KeyValue<K, V>> list = new LinkedList<>();
+            list.add(newKeyValue);
+            elements[position] = list;
         }
-        LinkedList<KeyValue<K, V>> list = new LinkedList<>();
-        KeyValue keyValue = new KeyValue();
-        keyValue.key = key;
-        keyValue.value = value;
-        list.add(keyValue);
-        elements[position] =list;
     }
 
     public void remove (K key) {
@@ -31,12 +39,23 @@ public class HashingTheMap<K, V> {
         if (elements[position] == null) {
             throw new IllegalArgumentException();
         }
-        elements[position] = null;
+        for (KeyValue keyValue : elements[position]) {
+            if (keyValue.key.equals(key)) {
+                elements[position].remove(keyValue);
+                return;
+            }
+        }
+        throw new IllegalArgumentException();
     }
 
-    public V getValue(K key) {
+    public Object getValue(K key) {
         int position = getHash(key);
-        return elements[position].get(0).value;
+        for (KeyValue keyValue: elements[position]) {
+            if (keyValue.key.equals(key)) {
+                return keyValue.value;
+            }
+        }
+        throw new IllegalArgumentException();
     }
 
     private int getHash(K key) {
